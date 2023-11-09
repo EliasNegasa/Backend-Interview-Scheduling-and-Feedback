@@ -1,13 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+// eslint-disable-next-line no-unused-vars
 import dotenv from 'dotenv/config';
 import connectDB from './config/db';
 import router from './src/routes';
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
 
-// connectDB();
+connectDB();
 
 const app = express();
 
