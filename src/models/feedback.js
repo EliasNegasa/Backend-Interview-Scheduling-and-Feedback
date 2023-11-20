@@ -26,8 +26,38 @@ const feedbackSchema = new Schema({
       message: 'Enock Result can only be Pending, Failed, Passed',
     },
   },
-  comment: {
+  personalFeedback: {
     type: String,
+  },
+  educationalStatus: {
+    type: String,
+  },
+  workStatus: {
+    type: String,
+  },
+  rotaionalShift: {
+    type: Boolean,
+    default: false,
+  },
+  weekend: {
+    type: Boolean,
+    default: false,
+  },
+  training: {
+    type: Boolean,
+    default: false,
+  },
+  threeMonthContract: {
+    type: Boolean,
+    default: false,
+  },
+  salary: {
+    type: Boolean,
+    default: false,
+  },
+  kebelID: {
+    type: Boolean,
+    default: false,
   },
 });
 
