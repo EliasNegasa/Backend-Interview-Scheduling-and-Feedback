@@ -18,7 +18,17 @@ const clientSchema = new Schema({
     immutable: true,
     validate: [validator.isEmail, 'Please enter a valid email'],
   },
-});
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    immutable: true,
+    },
+    updatedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    },
+},
+{timestamps:true});
 
 const Client = mongoose.model('Client', clientSchema);
 

@@ -1,6 +1,9 @@
 import asyncHandler from 'express-async-handler';
 import generateUrl from '../utils/generate-url';
 import Schedule from '../models/schedule';
+import Candidate from '../models/candidate';
+import Client from '../models/client';
+import User from '../models/user';
 
 const getScheduleById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -50,9 +53,31 @@ const getSchedules = asyncHandler(async (req, res) => {
 });
 
 const createSchedule = asyncHandler(async (req, res) => {
-  const schedule = await Schedule.create(req.body);
+  const createdBy = req.user._id;
 
-  res.status(201).json(schedule);
+  const { candidate, client, interviewer, ...scheduleData } = req.body;
+
+  // Create the schedule with the proved data
+  const schedule = await Schedule.create({
+    ...scheduleData,
+    candidate: candidate,
+    client: client,
+    interviewer: interviewer,
+    createdBy,
+  });
+
+
+  const scheduledCandidate = await Candidate.findById(candidate);
+  const forClient = await Client.findById(client);
+  const interviewerFor = await User.findById(interviewer);
+  const response = {
+    ...schedule.toObject(),
+    scheduledCandidate,
+    forClient,
+    interviewerFor,
+  };
+
+  res.status(201).json(response);
 });
 
 const updateSchedule = asyncHandler(async (req, res) => {
@@ -64,8 +89,9 @@ const updateSchedule = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Schedule not Found');
   }
-
-  const updatedSchedule = await Schedule.findByIdAndUpdate(id, req.body, {
+  const updatedBy = req.user._id;
+  const scheduleData = { ...req.body, updatedBy }; 
+  const updatedSchedule = await Schedule.findByIdAndUpdate(id, scheduleData, {
     new: true,
     runValidators: true,
   });

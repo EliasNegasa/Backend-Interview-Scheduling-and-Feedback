@@ -1,16 +1,18 @@
 import { Router } from 'express';
 import {
   createUser,
+  LoginUser,
   deleteUser,
   getUserById,
   getUsers,
   updateUser,
 } from '../controllers/user';
+import auth from '../middlewares/auth';
+import RecruiterAuth from '../middlewares/RecruiterAuth';
 
 const router = Router();
 
-router.route('/').get(getUsers).post(createUser);
-
-router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);
-
+router.route('/').get(auth,RecruiterAuth,getUsers).post(auth,RecruiterAuth,createUser);
+router.route('/:id').get(auth,RecruiterAuth,getUserById).patch(auth,RecruiterAuth,updateUser).delete(auth,RecruiterAuth,deleteUser);
+router.route('/login').post(LoginUser)
 export default router;
