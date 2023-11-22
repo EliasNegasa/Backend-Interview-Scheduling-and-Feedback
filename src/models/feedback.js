@@ -37,27 +37,21 @@ const feedbackSchema = new Schema({
   },
   rotaionalShift: {
     type: Boolean,
-    default: false,
   },
   weekend: {
     type: Boolean,
-    default: false,
   },
   training: {
     type: Boolean,
-    default: false,
   },
   threeMonthContract: {
     type: Boolean,
-    default: false,
   },
   salary: {
     type: Boolean,
-    default: false,
   },
-  kebelID: {
+  kebeleID: {
     type: Boolean,
-    default: false,
   },
 });
 
