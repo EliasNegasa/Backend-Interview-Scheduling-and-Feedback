@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
 let CandidateSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+    // _id: mongoose.Schema.Types.ObjectId
     firstName:{
         type:String,
         require :[ true, 'please enter first name']
     },
-    middelName:{
+    surName:{
         type:String,
-        require :[ true, 'please enter middle name']
+        require :[ true, 'please enter sur name']
     },
     lastName:{
         type:String,
@@ -35,10 +35,8 @@ let CandidateSchema = new Schema({
         type:String,
         require :[ true, 'please enter position']
     },
-    registeredBy:{  type: Schema.Types.ObjectId, ref: 'user',    immutable: true, },
+    createdBy:{  type: Schema.Types.ObjectId, ref: 'user',    immutable: true, },
     updatedBy: { type: Schema.Types.ObjectId, ref: 'user' },
-    registrationDate: { type: Date, default: Date.now },
-    updatedDate: { type: Date, default: Date.now },
     resume: String,
     RecommendedBy:String,
     overAllFeedBack: String,
@@ -46,7 +44,7 @@ let CandidateSchema = new Schema({
         type: Boolean,
         default: true,
       },
-},
+},{timestamps:true}
 );
 
 const Candidate = mongoose.model('Candidate', CandidateSchema);

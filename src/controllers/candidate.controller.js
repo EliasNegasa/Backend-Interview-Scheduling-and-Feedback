@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Candidate from '../models/candidate.js';
 import generateUrl from '../utils/generate-url';
+import Client from '../models/client';
 
 
 const generateCandidateResponse = (candidate) => {
@@ -35,6 +36,7 @@ const createCandidate = asyncHandler(async (req, res) => {
 
     const email=req.body.email;
     const phoneNumber=req.body.phoneNumber;
+    const createdBy = req.user._id;
     
 
     const oldCandidate = await  Candidate.find({$or:[{email:email},{phoneNumber:phoneNumber}]})
@@ -42,11 +44,17 @@ const createCandidate = asyncHandler(async (req, res) => {
               return res.status(400).json({msg:`you have the candidate on your database before!`,oldCandidate})
         }
     else{
-        const candidate = await Candidate.create ( {...req.body,
-            Candidate: req.user.id,})
-            res.status(201).json(generateCandidateResponse(candidate));
+        const { currentClient, ...candidateData } = req.body;
+        const candidate = await Candidate.create ({...candidateData,currentClient,createdBy})
+            console.log(createdBy)
+            console.log(currentClient)
+        const forClient = await Client.findById(currentClient);
+        const response = {
+          ...candidate.toObject(),
+          name:forClient.name,
+        };
 
-
+            res.status(201).json(response);
     }});
 const getCandidates = asyncHandler(async (req, res) => {
     const { page = 1, limit = 15, sort, ...filterQueries } = req.query;
@@ -93,7 +101,9 @@ const getCandidateById = asyncHandler(async (req, res) => {
     res.status(200).json(generateCandidateResponse(candidate));
 });
 const updateCandidate = asyncHandler(async (req, res) => {
-const candidate = await Candidate.findByIdAndUpdate(req.params.id, req.body, {
+  const updatedBy = req.user._id;
+
+const candidate = await Candidate.findByIdAndUpdate(req.params.id, req.body,updatedBy, {
       new: true,
       runValidators: true,
     });
