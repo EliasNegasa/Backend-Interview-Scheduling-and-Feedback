@@ -1,55 +1,63 @@
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
-let CandidateSchema = new Schema({
-    // _id: mongoose.Schema.Types.ObjectId
-    firstName:{
-        type:String,
-        require :[ true, 'please enter first name']
+let CandidateSchema = new Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      unique: true
     },
-    surName:{
-        type:String,
-        require :[ true, 'please enter sur name']
-    },
-    lastName:{
-        type:String,
-        require :[ true, 'please enter last name']
-    },
-    email:{
-        type:String,
-        require :[ true, 'please enter email']
-    },
-    phoneNumber: {
-        type:String,
-        require :[ true, 'please enter phoneNumber']
-    },  
-    source: String,
-    currentClient: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
-    currentInterviewStatus: String,
-    status: String,
-    location: {
-        type:String,
-        require :[ true, 'please enter Location']
-    },
-    appliedPosition: {
-        type:String,
-        require :[ true, 'please enter position']
-    },
-    createdBy:{  type: Schema.Types.ObjectId, ref: 'user',    immutable: true, },
-    updatedBy: { type: Schema.Types.ObjectId, ref: 'user' },
-    resume: String,
-    RecommendedBy:String,
-    overAllFeedBack: String,
-    isActive: {
-        type: Boolean,
-        default: true,
+    source: {
+      type: String,
+      enum: {
+        values: ['Linkedin', 'Telegram Bot', 'Tiktok', 'Dereja', 'University'],
+        message:
+          'Source can only be Linkedin, Telegram bot, Tiktok, Dereja, University',
       },
-},{timestamps:true}
+    },
+    status: {
+      type: String,
+      enum: {
+        values: ['Rejected', 'Interviewed', 'Pending', 'Offered'],
+        message: 'Status can only be Rejected, Interviewed, Pending, Offered',
+      },
+    },
+    currentClient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Client',
+    },
+    currentInterviewStatus: {
+      type: String,
+      default: 'None',
+      enum: {
+        values: ['Phone', 'In-person', 'Client', 'Completed', 'None'],
+        message: 'Status can only be Phone, Client, Completed, None',
+      },
+    },
+    location: {
+      type: String,
+      require: [true, 'please enter Location'],
+    },
+    position: {
+      type: String,
+    },
+    foreignName: {
+      type: String,
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+      immutable: true,
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    },
+  },
+  { timestamps: true }
 );
 
 const Candidate = mongoose.model('Candidate', CandidateSchema);
 
 export default Candidate;
-
-
-

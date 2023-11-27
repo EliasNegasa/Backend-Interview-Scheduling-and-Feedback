@@ -6,17 +6,18 @@ import {
   getClients,
   updateClient,
 } from '../controllers/client';
-import auth from '../middlewares/auth';
-import RecruiterAuth from '../middlewares/RecruiterAuth';
+import { auth } from '../middlewares/auth';
+// import RecruiterAuth from '../middlewares/RecruiterAuth';
 
 const router = Router();
 
-router.route('/').get(auth,RecruiterAuth,getClients).post(auth,RecruiterAuth,createClient);
+router.route('/').all(auth).get(getClients).post(createClient);
 
 router
-  .route('/:id',auth,RecruiterAuth)
-  .get(auth,RecruiterAuth,getClientById)
-  .patch(auth,RecruiterAuth,updateClient)
-  .delete(auth,RecruiterAuth,deleteClient);
+  .route('/:id')
+  .all(auth)
+  .get(getClientById)
+  .patch(updateClient)
+  .delete(deleteClient);
 
 export default router;

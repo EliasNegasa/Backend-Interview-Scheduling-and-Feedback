@@ -6,17 +6,18 @@ import {
   getSchedules,
   updateSchedule,
 } from '../controllers/schedule';
-import auth from '../middlewares/auth';
-import RecruiterAuth from '../middlewares/RecruiterAuth';
+import { auth } from '../middlewares/auth';
+// import RecruiterAuth from '../middlewares/RecruiterAuth';
 
 const router = Router();
 
-router.route('/').get(auth,getSchedules).post(auth,RecruiterAuth,createSchedule);
+router.route('/').all(auth).get(getSchedules).post(createSchedule);
 
 router
   .route('/:id')
-  .get(auth,getScheduleById)
-  .patch(auth,RecruiterAuth,updateSchedule)
-  .delete(auth,RecruiterAuth,deleteSchedule);
+  .all(auth)
+  .get(getScheduleById)
+  .patch(updateSchedule)
+  .delete(deleteSchedule);
 
 export default router;

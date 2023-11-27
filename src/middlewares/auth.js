@@ -1,30 +1,25 @@
-import jwt from 'jsonwebtoken';
+import asyncHandler from 'express-async-handler';
 import User from '../models/user';
+import { decodeToken } from '../utils/decode-token';
 
-const auth = async (req, res, next) => {
-  let token;
-  if (req.headers.authorization?.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, "secret");
-      const id = decoded.id;
-
-      const user = await User.findOne({ _id: id }); // Replace with the appropriate field or variable for the user ID in your user model
-
-      if (!user) {
-        return res.status(400).json({ msg: 'Not authorized' });
-      }
-
-      req.user = user;
-      next();
-    } catch (error) {
-      console.log(error);
-      res.status(400).json({ msg: 'Not authorized' });
-    }
-  }
+const auth = asyncHandler(async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
-    res.status(400).json({ msg: 'Not authorized' });
+    res.status(401);
+    throw new Error('Not Authenticated: no token provided!');
   }
-};
-export default auth;
+
+  try {
+    const { id } = decodeToken(token);
+
+    req.user = await User.findById(id).select('-password');
+  } catch (error) {
+    res.status(403);
+    throw new Error('Not Authenticated: invalid token!');
+  }
+
+  next();
+});
+
+export { auth };

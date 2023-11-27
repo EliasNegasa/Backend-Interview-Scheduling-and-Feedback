@@ -16,7 +16,6 @@ const userSchema = new Schema(
     },
     surName: {
       type: String,
-      required: [true, 'Please enter middlename'],
     },
     email: {
       type: String,
@@ -39,6 +38,10 @@ const userSchema = new Schema(
         message:
           'Role can only be Candidate, Recruiter, Interviewer, Receptionist',
       },
+    },
+    phoneNumber: {
+      type: String,
+      require: [true, 'please enter Phone Number'],
     },
     technicalRecruiter: {
       type: [String],
