@@ -1,38 +1,13 @@
 import asyncHandler from 'express-async-handler';
 import Candidate from '../models/candidate.js';
 import generateUrl from '../utils/generate-url.js';
-import Client from '../models/client.js';
 
 const createCandidate = asyncHandler(async (req, res) => {
-  const email = req.body.email;
-  const phoneNumber = req.body.phoneNumber;
-  const createdBy = req.user._id;
+  req.body.createdBy = req.user._id;
 
-  const oldCandidate = await Candidate.find({
-    $or: [{ email: email }, { phoneNumber: phoneNumber }],
-  });
-  if (oldCandidate.length > 0) {
-    return res.status(400).json({
-      msg: `you have the candidate on your database before!`,
-      oldCandidate,
-    });
-  } else {
-    const { currentClient, ...candidateData } = req.body;
-    const candidate = await Candidate.create({
-      ...candidateData,
-      currentClient,
-      createdBy,
-    });
-    console.log(createdBy);
-    console.log(currentClient);
-    const forClient = await Client.findById(currentClient);
-    const response = {
-      ...candidate.toObject(),
-      name: forClient.name,
-    };
+  const candidate = await Candidate.create(req.body);
 
-    res.status(201).json(response);
-  }
+  res.status(201).json(candidate);
 });
 
 const getCandidates = asyncHandler(async (req, res) => {
@@ -70,6 +45,7 @@ const getCandidates = asyncHandler(async (req, res) => {
     data: candidates,
   });
 });
+
 const getCandidateById = asyncHandler(async (req, res) => {
   const candidate = await Candidate.findById(req.params.id)
     .populate('user', '-password')
@@ -82,6 +58,7 @@ const getCandidateById = asyncHandler(async (req, res) => {
 
   res.status(200).json(candidate);
 });
+
 const updateCandidate = asyncHandler(async (req, res) => {
   const updatedBy = req.user._id;
 
@@ -97,6 +74,7 @@ const updateCandidate = asyncHandler(async (req, res) => {
 
   res.status(200).json(candidate);
 });
+
 const deleteCandidate = asyncHandler(async (req, res) => {
   const candidate = await Candidate.findByIdAndUpdate(req.params.id, {
     isActive: false,

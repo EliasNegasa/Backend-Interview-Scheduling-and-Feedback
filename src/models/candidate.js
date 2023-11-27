@@ -19,7 +19,7 @@ let CandidateSchema = new Schema(
     status: {
       type: String,
       enum: {
-        values: ['Rejected', 'Interviewed', 'Pending', 'Offered'],
+        values: ['Rejected', 'Interviewed', 'Pending', 'Hired'],
         message: 'Status can only be Rejected, Interviewed, Pending, Offered',
       },
     },
