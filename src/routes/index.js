@@ -2,13 +2,13 @@ import { Router } from 'express';
 import userRouter from './user';
 import clientRouter from './client';
 import scheduleRouter from './schedule';
-import candidateRourer from './candidate';
+import candidateRouter from './candidate';
 
 const router = Router();
 
 router.use('/users', userRouter);
 router.use('/clients', clientRouter);
 router.use('/schedules', scheduleRouter);
-router.use('/candidates', candidateRourer);
+router.use('/candidates', candidateRouter);
 
 export default router;
