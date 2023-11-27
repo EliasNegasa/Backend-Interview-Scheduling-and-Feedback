@@ -78,6 +78,10 @@ const createUser = asyncHandler(async (req, res) => {
     _id:user._id,
     name:user.firstName,
     email:user.email,
+    role:user.role,
+    isActive:user.isActive,
+    createdBy:user.createdBy,
+    technicalRecruiter:user.technicalRecruiter,
     token:generateToken(user._id)
 })        
 });
@@ -98,6 +102,10 @@ const  LoginUser=asyncHandler(async(req,res)=>{
               _id:userExists._id,
               name:userExists.name,
               email:userExists.email,
+              role:userExists.role,
+              isActive:userExists.isActive,
+              createdBy:userExists.createdBy,
+              technicalRecruiter:userExists.technicalRecruiter,
               token:generateToken(userExists._id)
           })
       }        
