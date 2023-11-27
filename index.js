@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv/config';
 import connectDB from './config/db';
 import router from './src/routes';
+import authRouter from './src/routes/auth';
 import { errorHandler, notFound } from './src/middlewares/error';
 
 // eslint-disable-next-line no-undef
@@ -19,6 +20,8 @@ app.use(helmet());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/auth', authRouter);
 
 app.use('/api', router);
 

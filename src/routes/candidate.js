@@ -1,11 +1,22 @@
 import { Router } from 'express';
-import { createCandidate,getCandidateById,getCandidates,updateCandidate,deleteCandidate } from '../controllers/candidate.controller';
+import {
+  createCandidate,
+  getCandidateById,
+  getCandidates,
+  updateCandidate,
+  deleteCandidate,
+} from '../controllers/candidate';
 const router = Router();
-import auth from '../middlewares/auth';
-import RecruiterAuth from '../middlewares/RecruiterAuth';
+import { auth } from '../middlewares/auth';
+// import RecruiterAuth from '../middlewares/RecruiterAuth';
 
-router.route('/').get(auth,RecruiterAuth,getCandidates).post(auth,RecruiterAuth,createCandidate);
+router.route('/').all(auth).get(getCandidates).post(createCandidate);
 
-router.route('/:id').get(auth,RecruiterAuth,getCandidateById).patch(auth,RecruiterAuth,updateCandidate).delete(auth,RecruiterAuth,deleteCandidate);
+router
+  .route('/:id')
+  .all(auth)
+  .get(getCandidateById)
+  .patch(updateCandidate)
+  .delete(deleteCandidate);
 
 export default router;

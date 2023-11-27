@@ -1,13 +1,28 @@
-const isRecruiter = (req, res, next) => {
-    // Check if the authenticated user has the admin role
-    if (req.user.role !== 'Recruiter') 
-    {
-        console.log(req.user.role)
-      return res.status(401).json({ error: 'Unauthorized' });
-      }
+import asyncHandler from 'express-async-handler';
+import User from '../models/user';
+import { decodeToken } from '../utils/decode-token';
 
-  // console.log(req.user.role)
-    next();
-  };
+const checkUserRole = (requiredRole) => {
+  return asyncHandler(async (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
 
-  export default isRecruiter ;
+    const { id } = decodeToken(token);
+
+    const user = await User.findById(id);
+
+    if (
+      user.role.toUpperCase() === requiredRole.toUpperCase() ||
+      user.role.toUpperCase() === 'SUPER ADMIN'
+    ) {
+      next();
+      return;
+    } else {
+      res.status(403);
+      throw new Error(`Not Authorized: ${requiredRole} role is required!`);
+    }
+  });
+};
+
+export const isRecruiter = checkUserRole('Recruiter');
+export const isInterviewer = checkUserRole('Interviewer');
+export const isCandidate = checkUserRole('Candidate');
