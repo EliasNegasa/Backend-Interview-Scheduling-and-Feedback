@@ -50,8 +50,8 @@ const getClients = asyncHandler(async (req, res) => {
 });
 
 const createClient = asyncHandler(async (req, res) => {
-  const createdBy = req.user._id; 
-  const clientData = { ...req.body, createdBy }; 
+  const createdBy = req.user._id;
+  const clientData = { ...req.body, createdBy };
   const client = await Client.create(clientData);
 
   res.status(201).json(client);
@@ -65,9 +65,9 @@ const updateClient = asyncHandler(async (req, res) => {
   if (!client) {
     res.status(404);
     throw new Error('Client not Found');
-    }
-    const updatedBy = req.user._id; 
-    const clientData = { ...req.body, updatedBy }; 
+  }
+  const updatedBy = req.user._id;
+  const clientData = { ...req.body, updatedBy };
   const updatedClient = await Client.findByIdAndUpdate(id, clientData, {
     new: true,
     runValidators: true,

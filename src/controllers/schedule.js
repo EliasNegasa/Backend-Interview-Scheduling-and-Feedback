@@ -8,7 +8,18 @@ import User from '../models/user';
 const getScheduleById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const schedule = await Schedule.findById(id);
+  const schedule = await Schedule.findById(id).populate([
+    {
+      path: 'candidate',
+    },
+    {
+      path: 'interviewer',
+      select: '-password',
+    },
+    {
+      path: 'client',
+    },
+  ]);
 
   if (!schedule) {
     res.status(404);
@@ -29,6 +40,18 @@ const getSchedules = asyncHandler(async (req, res) => {
   }
 
   const schedules = await Schedule.find(filterQueries)
+    .populate([
+      {
+        path: 'candidate',
+      },
+      {
+        path: 'interviewer',
+        select: '-password',
+      },
+      {
+        path: 'client',
+      },
+    ])
     .collation({ locale: 'en', strength: 2 })
     .sort(sort || '-createdAt')
     .skip((page - 1) * limit)
@@ -66,7 +89,6 @@ const createSchedule = asyncHandler(async (req, res) => {
     createdBy,
   });
 
-
   const scheduledCandidate = await Candidate.findById(candidate);
   const forClient = await Client.findById(client);
   const interviewerFor = await User.findById(interviewer);
@@ -90,7 +112,7 @@ const updateSchedule = asyncHandler(async (req, res) => {
     throw new Error('Schedule not Found');
   }
   const updatedBy = req.user._id;
-  const scheduleData = { ...req.body, updatedBy }; 
+  const scheduleData = { ...req.body, updatedBy };
   const updatedSchedule = await Schedule.findByIdAndUpdate(id, scheduleData, {
     new: true,
     runValidators: true,
