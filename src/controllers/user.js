@@ -33,7 +33,7 @@ const getUserById = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, sort, ...filterQueries } = req.query;
+  const { page = 1, limit = 100, sort, ...filterQueries } = req.query;
 
   const total = await User.countDocuments(filterQueries);
 

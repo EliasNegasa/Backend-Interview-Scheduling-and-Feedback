@@ -23,6 +23,9 @@ const scheduleSchema = new Schema(
         message: 'Interview Type can only be Phone, In-person, Client',
       },
     },
+    position: {
+      type: String,
+    },
     interviewer: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -30,6 +33,7 @@ const scheduleSchema = new Schema(
     attendance: {
       type: String,
       required: true,
+      default: 'Pending',
       enum: {
         values: ['Pending', 'Came', 'Absent'],
         message: 'Attendance can only be Came, Absent or Pending',

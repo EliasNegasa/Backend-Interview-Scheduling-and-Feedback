@@ -42,18 +42,18 @@ const getSchedules = asyncHandler(async (req, res) => {
   const schedules = await Schedule.find(filterQueries)
     .populate([
       {
-        path: 'candidate',
-      },
-      {
         path: 'interviewer',
         select: '-password',
       },
       {
         path: 'client',
       },
+      {
+        path: 'createdBy',
+      },
     ])
     .collation({ locale: 'en', strength: 2 })
-    .sort(sort || '-createdAt')
+    .sort(sort || '-date')
     .skip((page - 1) * limit)
     .limit(+limit);
 

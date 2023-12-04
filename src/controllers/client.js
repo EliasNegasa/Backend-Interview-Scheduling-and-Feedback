@@ -16,7 +16,7 @@ const getClientById = asyncHandler(async (req, res) => {
 });
 
 const getClients = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, sort, ...filterQueries } = req.query;
+  const { page = 1, limit = 100, sort, ...filterQueries } = req.query;
 
   const total = await Client.countDocuments(filterQueries);
 

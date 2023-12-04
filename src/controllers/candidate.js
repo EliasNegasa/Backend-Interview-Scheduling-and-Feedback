@@ -11,7 +11,7 @@ const createCandidate = asyncHandler(async (req, res) => {
 });
 
 const getCandidates = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 15, sort, ...filterQueries } = req.query;
+  const { page = 1, limit = 100, sort, ...filterQueries } = req.query;
 
   const total = await Candidate.countDocuments(filterQueries);
 

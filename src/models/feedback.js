@@ -35,7 +35,7 @@ const feedbackSchema = new Schema({
   workStatus: {
     type: String,
   },
-  rotaionalShift: {
+  rotationalShift: {
     type: Boolean,
   },
   weekend: {

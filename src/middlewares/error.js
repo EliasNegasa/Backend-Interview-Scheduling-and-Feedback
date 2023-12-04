@@ -1,5 +1,5 @@
 const notFound = (req, res, next) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
+  const error = new Error(`404: Resource not Found`);
   res.status(404);
   next(error);
 };
@@ -12,7 +12,7 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError' && err.kind === 'ObjectId') {
     statusCode = 400;
-    message = 'Invalid ID';
+    // message = 'Invalid ID';
   } else if (err.name === 'ValidationError') {
     statusCode = 400;
     message;
