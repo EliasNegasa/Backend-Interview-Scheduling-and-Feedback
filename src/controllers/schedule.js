@@ -5,6 +5,19 @@ import Candidate from '../models/candidate';
 import Client from '../models/client';
 import User from '../models/user';
 
+async function checkOverlap(interviewer, date, duration) {
+  const startDateTime = new Date(date);
+
+  const endDateTime = new Date(startDateTime.getTime() + duration * 60000); // duration in minutes
+
+  const overlap = await Schedule.findOne({
+    interviewer: interviewer,
+    date: { $lte: endDateTime, $gte: startDateTime },
+  });
+
+  return overlap !== null;
+}
+
 const getScheduleById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -78,28 +91,38 @@ const getSchedules = asyncHandler(async (req, res) => {
 const createSchedule = asyncHandler(async (req, res) => {
   const createdBy = req.user._id;
 
-  const { candidate, client, interviewer, ...scheduleData } = req.body;
+  const { candidate, client, interviewer, date, duration, ...scheduleData } =
+    req.body;
 
-  // Create the schedule with the proved data
-  const schedule = await Schedule.create({
-    ...scheduleData,
-    candidate: candidate,
-    client: client,
-    interviewer: interviewer,
-    createdBy,
-  });
+  const hasOverlap = await checkOverlap(interviewer, date, duration);
 
-  const scheduledCandidate = await Candidate.findById(candidate);
-  const forClient = await Client.findById(client);
-  const interviewerFor = await User.findById(interviewer);
-  const response = {
-    ...schedule.toObject(),
-    scheduledCandidate,
-    forClient,
-    interviewerFor,
-  };
+  if (hasOverlap) {
+    res.status(400);
+    throw new Error('Overlap Schedule found');
+  } else {
+    // Create the schedule with the proved data
+    const schedule = await Schedule.create({
+      ...scheduleData,
+      candidate: candidate,
+      client: client,
+      interviewer: interviewer,
+      date,
+      duration,
+      createdBy,
+    });
 
-  res.status(201).json(response);
+    const scheduledCandidate = await Candidate.findById(candidate);
+    const forClient = await Client.findById(client);
+    const interviewerFor = await User.findById(interviewer);
+    const response = {
+      ...schedule.toObject(),
+      scheduledCandidate,
+      forClient,
+      interviewerFor,
+    };
+
+    res.status(201).json(response);
+  }
 });
 
 const updateSchedule = asyncHandler(async (req, res) => {
